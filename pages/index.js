@@ -36,6 +36,31 @@ export default function Home() {
         />
         <meta property="og:image" content="/images/hb-fence.webp" />
         <meta property="og:type" content="website" />
+
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              name: "HB Fence",
+              address: {
+                streetAddress: "123 Fence Lane",
+                addressLocality: "Houston",
+                addressRegion: "TX",
+                postalCode: "77001",
+                addressCountry: "US",
+              },
+              telephone: "+1-800-555-0199",
+              url: "https://hbfencellc-dcaebc9ff941.herokuapp.com/",
+              image:
+                "https://hbfencellc-dcaebc9ff941.herokuapp.com/images/hb-fence.webp",
+              description:
+                "HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Get your free quote today!",
+            }),
+          }}
+        />
       </Head>
 
       {/* Hero Section */}
