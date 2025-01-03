@@ -66,18 +66,34 @@ export default function Home() {
       {/* Hero Section */}
       <Box
         sx={{
+          position: "relative",
           height: "100vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          backgroundImage: "url(/images/hb-fence.webp)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           textAlign: "center",
           color: "white",
+          overflow: "hidden",
         }}
       >
+        {/* Background Image with Opacity */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundImage: "url(/images/hb-fence.webp)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            filter: "brightness(40%)", // Adjust opacity via brightness
+            zIndex: -1, // Send background behind the content
+          }}
+        />
+        {/* Content */}
         <Typography variant="h2" component="h1" gutterBottom>
           HB Fence
         </Typography>
