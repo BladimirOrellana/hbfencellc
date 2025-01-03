@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Contact from "../../models/contact"; // Import the model
 
 const MONGO_URI = process.env.MONGO_URI;
-
+console.log("mogo uri", MONGO_URI);
 // Connect to MongoDB
 async function connectToDB() {
   if (mongoose.connection.readyState >= 1) {
