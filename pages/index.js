@@ -1,39 +1,58 @@
 import React from "react";
-import { Box, Typography, Button, Grid } from "@mui/material";
+import Head from "next/head";
+import { Box, Typography, Button } from "@mui/material";
 
 export default function Home() {
   return (
-    <Box sx={{ overflowX: "hidden" }}>
-      {/* Section 1: Hero */}
+    <>
+      {/* SEO Metadata */}
+      <Head>
+        <title>HB Fence | Quality Fencing Solutions in Houston, TX</title>
+        <meta
+          name="description"
+          content="HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Get your free quote today!"
+        />
+        <meta
+          name="keywords"
+          content="Fencing, Fence Installation, Houston, HB Fence, Wood Fencing, Metal Fencing"
+        />
+        <meta name="author" content="HB Fence" />
+        <meta name="robots" content="index, follow" />
+        <link
+          rel="canonical"
+          href="https://hbfencellc-dcaebc9ff941.herokuapp.com/"
+        />
+        <meta
+          property="og:title"
+          content="HB Fence | Quality Fencing Solutions in Houston, TX"
+        />
+        <meta
+          property="og:description"
+          content="HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Get your free quote today!"
+        />
+        <meta
+          property="og:url"
+          content="https://hbfencellc-dcaebc9ff941.herokuapp.com/"
+        />
+        <meta property="og:image" content="/images/hb-fence.webp" />
+        <meta property="og:type" content="website" />
+      </Head>
+
+      {/* Hero Section */}
       <Box
         sx={{
-          position: "relative",
           height: "100vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          backgroundImage: "url(/images/hb-fence.webp)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           textAlign: "center",
           color: "white",
         }}
       >
-        {/* Background Image with Opacity */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundImage: "url(/images/hb-fence.webp)", // Add your image in public/images
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            filter: "brightness(40%)", // Adjust opacity by controlling brightness
-            zIndex: -1,
-          }}
-        />
-        {/* Content */}
         <Typography variant="h2" component="h1" gutterBottom>
           HB Fence
         </Typography>
@@ -49,72 +68,6 @@ export default function Home() {
           Get a Free Quote
         </Button>
       </Box>
-
-      {/* Section 2: Features */}
-      <Box sx={{ py: 8, px: 4, textAlign: "center" }}>
-        <Typography variant="h4" gutterBottom>
-          Why Choose HB Fence?
-        </Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={4}>
-            <Box>
-              <img src="/images/wood-fence.jpg" alt="Wood Fence" width="100%" />
-              <Typography variant="h6">Wood Fencing</Typography>
-              <Typography variant="body1">
-                Elegant and durable wood fences for any property.
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Box>
-              <img
-                src="/images/metal-fence.jpg"
-                alt="Metal Fence"
-                width="100%"
-              />
-              <Typography variant="h6">Metal Fencing</Typography>
-              <Typography variant="body1">
-                Secure and long-lasting metal fences.
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Box>
-              <img
-                src="/images/custom-gate.jpg"
-                alt="Custom Gates"
-                width="100%"
-              />
-              <Typography variant="h6">Custom Gates</Typography>
-              <Typography variant="body1">
-                Designed to complement your fencing style.
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {/* Section 3: Call to Action */}
-      <Box
-        sx={{
-          py: 8,
-          px: 4,
-          backgroundColor: "#f5f5f5",
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          Ready to elevate your property?
-        </Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="large"
-          href="/contact"
-        >
-          Contact Us Today
-        </Button>
-      </Box>
-    </Box>
+    </>
   );
 }
