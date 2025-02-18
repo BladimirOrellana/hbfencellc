@@ -1,65 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Head from "next/head";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Grid, Avatar } from "@mui/material";
+import Link from "next/link";
 
 export default function Home() {
+  const [location, setLocation] = useState(null);
+  const [error, setError] = useState(null);
+
+  const saveLocation = async (latitude, longitude) => {
+    try {
+      await axios.post("/api/visitors-location", { latitude, longitude });
+      console.log("Location saved to database");
+    } catch (err) {
+      console.error("Error saving location:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+          saveLocation(latitude, longitude);
+        },
+        (err) => {
+          console.error("Error fetching location:", err.message);
+          setError("Unable to retrieve your location.");
+        }
+      );
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   return (
     <>
-      {/* SEO Metadata */}
       <Head>
         <title>HB Fence | Quality Fencing Solutions in Houston, TX</title>
         <meta
           name="description"
           content="HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Get your free quote today!"
-        />
-        <meta
-          name="keywords"
-          content="Fencing, Fence Installation, Houston, HB Fence, Wood Fencing, Metal Fencing"
-        />
-        <meta name="author" content="HB Fence" />
-        <meta name="robots" content="index, follow" />
-        <link
-          rel="canonical"
-          href="https://hbfencellc-dcaebc9ff941.herokuapp.com/"
-        />
-        <meta
-          property="og:title"
-          content="HB Fence | Quality Fencing Solutions in Houston, TX"
-        />
-        <meta
-          property="og:description"
-          content="HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Get your free quote today!"
-        />
-        <meta
-          property="og:url"
-          content="https://hbfencellc-dcaebc9ff941.herokuapp.com/"
-        />
-        <meta property="og:image" content="/images/hb-fence.webp" />
-        <meta property="og:type" content="website" />
-
-        {/* Structured Data for SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              name: "HB Fence",
-              address: {
-                streetAddress: "123 Fence Lane",
-                addressLocality: "Houston",
-                addressRegion: "TX",
-                postalCode: "77001",
-                addressCountry: "US",
-              },
-              telephone: "+1-800-555-0199",
-              url: "https://hbfencellc-dcaebc9ff941.herokuapp.com/",
-              image:
-                "https://hbfencellc-dcaebc9ff941.herokuapp.com/images/hb-fence.webp",
-              description:
-                "HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Get your free quote today!",
-            }),
-          }}
         />
       </Head>
 
@@ -77,7 +59,6 @@ export default function Home() {
           overflow: "hidden",
         }}
       >
-        {/* Background Image with Opacity */}
         <Box
           sx={{
             position: "absolute",
@@ -89,24 +70,37 @@ export default function Home() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            filter: "brightness(40%)", // Adjust opacity via brightness
-            zIndex: -1, // Send background behind the content
+            filter: "brightness(40%)",
+            zIndex: -1,
           }}
         />
-        {/* Content */}
         <Typography variant="h2" component="h1" gutterBottom>
           HB Fence
         </Typography>
         <Typography variant="h6" gutterBottom>
           The ultimate fencing solution for your property.
         </Typography>
+
+        {/* Get a Free Quote Button */}
         <Button
           variant="contained"
           color="primary"
           size="large"
+          component={Link}
           href="/contact"
+          sx={{ mb: 2 }} // Add margin-bottom for spacing
         >
           Get a Free Quote
+        </Button>
+
+        {/* Call Us Button */}
+        <Button
+          variant="outlined"
+          color="secondary"
+          size="large"
+          href="tel:8322964721"
+        >
+          Call Us Now
         </Button>
       </Box>
     </>

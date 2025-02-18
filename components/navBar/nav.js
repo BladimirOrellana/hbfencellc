@@ -1,11 +1,10 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const NavBar = () => {
   const router = useRouter();
-
-  // Check if the current page is the homepage
   const isHomePage = router.pathname === "/";
 
   return (
@@ -14,29 +13,24 @@ const NavBar = () => {
       sx={{
         background: "transparent",
         boxShadow: "none",
-        color: isHomePage ? "white" : "black", // White for home, black for others
+        color: isHomePage ? "white" : "black",
       }}
     >
-      <Toolbar
-        sx={{
-          marginBottom: isHomePage ? 0 : 2,
-          // Add bottom margin only for non-home pages
-        }}
-      >
+      <Toolbar sx={{ marginBottom: isHomePage ? 0 : 2 }}>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           HB Fence
         </Typography>
         <Box>
-          <Button color="inherit" href="/">
+          <Button color="inherit" component={Link} href="/">
             Home
           </Button>
-          <Button color="inherit" href="/reviews">
+          <Button color="inherit" component={Link} href="/reviews">
             Reviews
           </Button>
-          <Button color="inherit" href="/services">
+          <Button color="inherit" component={Link} href="/services">
             Services
           </Button>
-          <Button color="inherit" href="/contact">
+          <Button color="inherit" component={Link} href="/contact">
             Contact
           </Button>
         </Box>

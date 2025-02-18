@@ -1,6 +1,7 @@
 import React from "react";
 import NavBar from "./navBar/nav";
 import { Box } from "@mui/material";
+import Footer from "./Footer";
 
 const Layout = ({ children }) => {
   return (
@@ -9,6 +10,7 @@ const Layout = ({ children }) => {
       <NavBar />
       {/* Page Content */}
       <Box component="main">{children}</Box>
+      <Footer />
     </Box>
   );
 };
