@@ -6,6 +6,7 @@ import Link from "next/link";
 import EnhancifyWidget from "../components/EnhancifyWidget";
 import FinancingBanner from "../components/financingBanner";
 import EnhancifyPaymentCalculator from "../components/EnhancifyPaymentCalculator";
+import FenceMeasurementTool from "../components/FenceMeasurementTool";
 
 export default function Home() {
   const [error, setError] = useState(null);
@@ -184,6 +185,17 @@ export default function Home() {
           mt: 6,
         }}
       >
+        {/* Get a Free Quote Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          component={Link}
+          href="/Fence-measurement-page"
+          sx={{ mb: 2 }}
+        >
+          Online estimate
+        </Button>
         <Typography
           variant="h4"
           color="textSecondary"

@@ -8,16 +8,18 @@
     "start": "next start",
     "lint": "next lint",
     "push": "git add . && git commit -m'upload' && git push origin main && git push heroku main"
-   
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mapbox/mapbox-gl-draw": "^1.5.0",
     "@mui/icons-material": "^6.3.0",
     "@mui/material": "^6.3.0",
+    "@turf/turf": "^7.2.0",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "mapbox-gl": "^3.10.0",
     "mongoose": "^8.9.3",
     "next": "15.1.3",
     "react": "^19.0.0",
