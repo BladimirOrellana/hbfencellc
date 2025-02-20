@@ -31,7 +31,7 @@ const Footer = () => {
             </Typography>
             <Button
               component={Link}
-              href="/wood-fencing"
+              href="/residential-fencing"
               color="inherit"
               sx={{ textTransform: "none" }}
             >
@@ -40,7 +40,7 @@ const Footer = () => {
             <br />
             <Button
               component={Link}
-              href="/metal-fencing"
+              href="/comercial-fencing"
               color="inherit"
               sx={{ textTransform: "none" }}
             >
@@ -49,7 +49,7 @@ const Footer = () => {
             <br />
             <Button
               component={Link}
-              href="/custom-gates"
+              href="/custom-fence-design"
               color="inherit"
               sx={{ textTransform: "none" }}
             >
