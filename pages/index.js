@@ -8,35 +8,49 @@ import FinancingBanner from "../components/financingBanner";
 import EnhancifyPaymentCalculator from "../components/EnhancifyPaymentCalculator";
 
 export default function Home() {
-  const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
-
-  const saveLocation = async (latitude, longitude) => {
-    try {
-      await axios.post("/api/visitors-location", { latitude, longitude });
-      console.log("Location saved to database");
-    } catch (err) {
-      console.error("Error saving location:", err.message);
-    }
-  };
+  const [locationAllowed, setLocationAllowed] = useState(null);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hasAllowedLocation = localStorage.getItem("userLocationAllowed");
+
+      if (hasAllowedLocation === "true") {
+        setLocationAllowed(true);
+        console.log("User has previously allowed location access.");
+      } else {
+        setLocationAllowed(false);
+      }
+    }
+  }, []);
+
+  const requestLocationAccess = () => {
     if (typeof window !== "undefined" && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-          saveLocation(latitude, longitude);
+          setLocationAllowed(true);
+          localStorage.setItem("userLocationAllowed", "true");
+          localStorage.setItem("userLatitude", latitude);
+          localStorage.setItem("userLongitude", longitude);
+          console.log(
+            `User Location: Latitude ${latitude}, Longitude ${longitude}`
+          );
+
+          // Send location to backend (optional)
+          axios
+            .post("/api/visitor-location", { latitude, longitude })
+            .then((res) => console.log("Location saved:", res.data))
+            .catch((err) => console.error("Error saving location:", err));
         },
-        (err) => {
-          console.error("Error fetching location:", err.message);
-          setError("Unable to retrieve your location.");
+        (error) => {
+          console.error("Error getting location:", error);
+          setLocationAllowed(false);
+          localStorage.setItem("userLocationAllowed", "false");
         }
       );
-    } else {
-      setError("Geolocation is not supported by this browser.");
     }
-  }, []);
+  };
 
   return (
     <>
@@ -59,22 +73,27 @@ export default function Home() {
           content="HB Fence provides high-quality fencing solutions for residential and commercial properties in Houston, TX. Explore our financing options!"
         />
         <meta property="og:image" content="/images/hb-fence.webp" />
-        <meta property="og:url" content="https://www.hbfence.com/financing" />
-        <script type="application/ld+json">
-          {`
-        {
-          "@context": "https://schema.org",
-          "@type": "FinancialProduct",
-          "name": "HB Fence Financing",
-          "description": "HB Fence provides flexible financing options for your fencing project in Houston, TX.",
-          "provider": {
-            "@type": "Organization",
-            "name": "HB Fence",
-            "url": "https://www.hbfence.com/financing"
-          }
-        }
-        `}
-        </script>
+        <meta
+          property="og:url"
+          content="https://www.hbfencecompany.com/financing"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FinancialProduct",
+              name: "HB Fence Financing",
+              description:
+                "HB Fence provides flexible financing options for your fencing project in Houston, TX.",
+              provider: {
+                "@type": "Organization",
+                name: "HB Fence",
+                url: "https://www.hbfencecompany.com/financing",
+              },
+            }),
+          }}
+        />
       </Head>
 
       {/* Hero Section */}
@@ -136,8 +155,22 @@ export default function Home() {
         >
           Call Us Now
         </Button>
+
+        {/* Location Access */}
+        {!locationAllowed && (
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            sx={{ mt: 2 }}
+            onClick={requestLocationAccess}
+          >
+            Allow Location Access
+          </Button>
+        )}
       </Box>
 
+      {/* Financing Section */}
       <Box
         sx={{
           height: "100vh",
@@ -156,8 +189,8 @@ export default function Home() {
           color="textSecondary"
           sx={{
             mb: 3,
-            maxWidth: "80%", // Ensures text doesn't stretch too wide
-            width: "100%", // Allows it to inherit text alignment
+            maxWidth: "80%",
+            width: "100%",
           }}
         >
           Don't let budget constraints hold you back from securing your property

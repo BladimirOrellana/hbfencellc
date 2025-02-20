@@ -17,7 +17,18 @@ const NavBar = () => {
       }}
     >
       <Toolbar sx={{ marginBottom: isHomePage ? 0 : 2 }}>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        {/* Clickable HB Fence Typography */}
+        <Typography
+          variant="h6"
+          sx={{ flexGrow: 1, cursor: "pointer" }}
+          component={Link}
+          href="/"
+          passHref
+          style={{
+            textDecoration: "none",
+            color: isHomePage ? "white" : "black",
+          }}
+        >
           HB Fence
         </Typography>
         <Box>
