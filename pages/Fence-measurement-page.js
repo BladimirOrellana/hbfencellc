@@ -11,7 +11,6 @@ const FenceMeasurementTool = dynamic(
 export default function FenceMeasurementPage() {
   return (
     <div>
-      <h1>Fence Measurement</h1>
       <FenceMeasurementTool />
     </div>
   );
