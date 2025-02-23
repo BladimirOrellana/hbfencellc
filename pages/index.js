@@ -157,18 +157,17 @@ export default function Home() {
           Call Us Now
         </Button>
 
-        {/* Location Access */}
-        {!locationAllowed && (
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            sx={{ mt: 2 }}
-            onClick={requestLocationAccess}
-          >
-            Allow Location Access
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          style={{ marginTop: 10 }}
+          component={Link}
+          href="/Fence-measurement-page"
+          sx={{ mb: 2 }}
+        >
+          Online estimate
+        </Button>
       </Box>
 
       {/* Financing Section */}

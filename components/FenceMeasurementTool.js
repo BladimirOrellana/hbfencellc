@@ -1,5 +1,4 @@
-"use client"; // Ensure this runs only on the client-side
-
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
@@ -11,7 +10,7 @@ const FenceMeasurementTool = () => {
   const mapContainerRef = useRef(null);
   const [map, setMap] = useState(null);
   const [draw, setDraw] = useState(null);
-  const [length, setLength] = useState(0);
+  const [measurements, setMeasurements] = useState([]);
   const [userAddress, setUserAddress] = useState("");
   const [inputAddress, setInputAddress] = useState("");
 
@@ -20,8 +19,8 @@ const FenceMeasurementTool = () => {
 
     const newMap = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/satellite-v9", // High-quality satellite view
-      center: [-95.3698, 29.7604], // Default: Houston, TX
+      style: "mapbox://styles/mapbox/satellite-v9",
+      center: [-95.3698, 29.7604],
       zoom: 16,
     });
 
@@ -38,32 +37,60 @@ const FenceMeasurementTool = () => {
     setMap(newMap);
     setDraw(drawTool);
 
-    newMap.on("draw.create", () => updateMeasurement(drawTool));
-    newMap.on("draw.update", () => updateMeasurement(drawTool));
-    newMap.on("draw.delete", () => setLength(0));
+    newMap.on("draw.create", () => {
+      updateMeasurements(drawTool);
+      // Defer changing the mode to avoid immediate recursive events
+      setTimeout(() => {
+        if (drawTool.getMode() !== "draw_line_string") {
+          drawTool.changeMode("draw_line_string");
+        }
+      }, 0);
+    });
+    newMap.on("draw.update", () => updateMeasurements(drawTool));
+    newMap.on("draw.delete", () => updateMeasurements(drawTool));
 
     return () => newMap.remove();
   }, []);
 
-  // Function to update the fence measurement
-  const updateMeasurement = (drawInstance) => {
+  // Update measurements for each drawn line separately.
+  const updateMeasurements = (drawInstance) => {
     if (!drawInstance) return;
     const data = drawInstance.getAll();
-    let totalLength = 0;
-
     if (data.features.length > 0) {
-      data.features.forEach((feature) => {
-        if (feature.geometry.type === "LineString") {
-          totalLength += turf.length(feature, { units: "feet" });
-        }
-      });
-      setLength(totalLength.toFixed(2));
+      const newMeasurements = data.features
+        .filter(
+          (feature) =>
+            feature.geometry &&
+            feature.geometry.type === "LineString" &&
+            feature.geometry.coordinates.length > 0
+        )
+        .map((feature) => {
+          const cleanFeature = {
+            type: "Feature",
+            geometry: {
+              type: "LineString",
+              coordinates: feature.geometry.coordinates,
+            },
+            properties: {},
+          };
+          try {
+            const measurement = turf.length(cleanFeature, { units: "feet" });
+            return { id: feature.id, length: measurement.toFixed(2) };
+          } catch (err) {
+            console.error(
+              "Error calculating length for feature id:",
+              feature.id,
+              err
+            );
+            return { id: feature.id, length: "0" };
+          }
+        });
+      setMeasurements(newMeasurements);
     } else {
-      setLength(0);
+      setMeasurements([]);
     }
   };
 
-  // Search for address and move the map to the house location
   const searchAddress = async () => {
     if (!inputAddress) return;
 
@@ -77,7 +104,6 @@ const FenceMeasurementTool = () => {
 
       if (data.features.length > 0) {
         const { center, place_name } = data.features[0];
-
         setUserAddress(place_name);
         if (map) {
           map.flyTo({ center, zoom: 18 });
@@ -91,45 +117,33 @@ const FenceMeasurementTool = () => {
     }
   };
 
-  // Undo last drawn point
-  const undoLastPoint = () => {
-    if (!draw) return;
-    const data = draw.getAll();
-    if (data.features.length > 0) {
-      const lastFeature = data.features[data.features.length - 1];
-      if (lastFeature.geometry.coordinates.length > 2) {
-        lastFeature.geometry.coordinates.pop();
-        draw.setFeature(lastFeature);
-        updateMeasurement(draw);
-      }
-    }
-  };
-
-  // Delete the selected line
   const deleteSelected = () => {
     if (!draw) return;
     const selectedFeatures = draw.getSelected();
     if (selectedFeatures.features.length > 0) {
       draw.delete(selectedFeatures.features.map((f) => f.id));
-      setLength(0);
+      updateMeasurements(draw);
+      draw.changeMode("draw_line_string");
     }
   };
 
-  // Restart everything (clear all drawings)
   const restartDrawing = () => {
     if (!draw) return;
     draw.deleteAll();
-    setLength(0);
+    setMeasurements([]);
+    draw.changeMode("draw_line_string");
   };
+
+  const totalLength = measurements
+    .reduce((acc, m) => acc + parseFloat(m.length), 0)
+    .toFixed(2);
 
   return (
     <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-      {/* Navigation Placeholder (Replace with your Nav component if needed) */}
       <nav style={navStyle}>
         <h2>Fence Measurement Tool</h2>
       </nav>
 
-      {/* Address Search Input (Now below the navbar) */}
       <div style={searchContainerStyle}>
         <input
           type="text"
@@ -143,23 +157,29 @@ const FenceMeasurementTool = () => {
         </button>
       </div>
 
-      {/* Map Container */}
       <div ref={mapContainerRef} style={{ width: "100%", height: "100%" }} />
 
-      {/* Info Panel */}
       <div style={infoPanelStyle}>
         <p>
           <strong>Your Address:</strong>{" "}
           {userAddress || "Enter an address to begin"}
         </p>
         <p>
-          Total Length: <strong>{length} ft</strong>
+          <strong>Total Length: </strong>
+          {totalLength} ft
         </p>
 
-        {/* Buttons */}
-        <button onClick={undoLastPoint} style={buttonStyle}>
-          Undo Last Point
-        </button>
+        <div>
+          <strong>Measurements:</strong>
+          <ul>
+            {measurements.map((m, index) => (
+              <li key={m.id}>
+                Measurement {index + 1}: {m.length} ft
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <button onClick={deleteSelected} style={buttonStyle}>
           Delete Selected
         </button>
@@ -171,7 +191,6 @@ const FenceMeasurementTool = () => {
   );
 };
 
-// Styles
 const navStyle = {
   width: "100%",
   height: "60px",
@@ -193,7 +212,7 @@ const searchContainerStyle = {
   justifyContent: "center",
   gap: "5px",
   boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-  zIndex: 10, // Ensures it stays above the map
+  zIndex: 10,
 };
 
 const inputStyle = {
@@ -216,7 +235,7 @@ const buttonStyle = {
 
 const infoPanelStyle = {
   position: "absolute",
-  top: "120px", // Positioned below the search bar
+  top: "120px",
   left: "10px",
   background: "#fff",
   padding: "10px",
