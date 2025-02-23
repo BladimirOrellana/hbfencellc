@@ -207,7 +207,7 @@ export default function Home() {
         >
           Don't let budget constraints hold you back from securing your property
           with a high-quality fence. Our financing options make it easy to get
-          started today!
+          started today!!
         </Typography>
 
         <FinancingBanner />
