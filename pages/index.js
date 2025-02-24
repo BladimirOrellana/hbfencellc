@@ -166,7 +166,7 @@ export default function Home() {
           href="/Fence-measurement-page"
           sx={{ mb: 2 }}
         >
-          Online estimate
+          Take Measurements
         </Button>
       </Box>
 

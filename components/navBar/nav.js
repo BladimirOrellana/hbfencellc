@@ -5,6 +5,12 @@ import Link from "next/link";
 
 const NavBar = () => {
   const router = useRouter();
+
+  // Hide NavBar on the fence measurement page (adjust the route as needed)
+  if (router.pathname === "/Fence-measurement-page") {
+    return null;
+  }
+
   const isHomePage = router.pathname === "/";
 
   return (

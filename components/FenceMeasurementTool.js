@@ -5,10 +5,16 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as turf from "@turf/turf";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { Margin, Opacity } from "@mui/icons-material";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const FenceMeasurementTool = () => {
+  const router = useRouter();
+  // Hide the nav on the fence measurement page (assumed route "/fence")
+  const hideNav = router.pathname === "/fence";
+
   const mapContainerRef = useRef(null);
   const [map, setMap] = useState(null);
   const [draw, setDraw] = useState(null);
@@ -77,7 +83,11 @@ const FenceMeasurementTool = () => {
           };
           try {
             const measurement = turf.length(cleanFeature, { units: "feet" });
-            return { id: feature.id, length: measurement.toFixed(2) };
+            // Use Math.ceil to round up to a whole number
+            return {
+              id: feature.id,
+              length: Math.ceil(measurement).toString(),
+            };
           } catch (err) {
             console.error(
               "Error calculating length for feature id:",
@@ -141,11 +151,15 @@ const FenceMeasurementTool = () => {
     .toFixed(2);
 
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-      <nav style={navStyle}></nav>
-
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        position: "relative",
+      }}
+    >
       <div style={searchContainerStyle}>
-        <Button style={buttonStyle} color="inherit" component={Link} href="/">
+        <Button style={buttonTop} color="inherit" component={Link} href="/">
           Home
         </Button>
         <input
@@ -155,7 +169,7 @@ const FenceMeasurementTool = () => {
           onChange={(e) => setInputAddress(e.target.value)}
           style={inputStyle}
         />
-        <button onClick={searchAddress} style={buttonStyle}>
+        <button onClick={searchAddress} style={buttonTop}>
           Find Address
         </button>
       </div>
@@ -167,10 +181,6 @@ const FenceMeasurementTool = () => {
           <strong>Your Address:</strong>{" "}
           {userAddress || "Enter an address to begin"}
         </p>
-        <p>
-          <strong>Total Length: </strong>
-          {totalLength} ft
-        </p>
 
         <div>
           <strong>Measurements:</strong>
@@ -181,6 +191,10 @@ const FenceMeasurementTool = () => {
               </li>
             ))}
           </ul>
+          <p>
+            <strong>Total Length: </strong>
+            {totalLength} ft
+          </p>
         </div>
 
         <button onClick={deleteSelected} style={buttonStyle}>
@@ -197,7 +211,7 @@ const FenceMeasurementTool = () => {
 const navStyle = {
   width: "100%",
   height: "60px",
-  backgroundColor: "#007bff",
+  backgroundColor: "transparent",
   color: "#fff",
   display: "flex",
   alignItems: "center",
@@ -209,7 +223,7 @@ const navStyle = {
 const searchContainerStyle = {
   position: "relative",
   width: "100%",
-  background: "#fff",
+  background: "transparent",
   padding: "15px",
   display: "flex",
   justifyContent: "center",
@@ -234,16 +248,29 @@ const buttonStyle = {
   borderRadius: "5px",
   cursor: "pointer",
   fontSize: "14px",
+  width: "100%",
+  margin: "5px",
+};
+const buttonTop = {
+  padding: "8px 12px",
+  border: "none",
+  backgroundColor: "#007bff",
+  color: "#fff",
+  borderRadius: "5px",
+  cursor: "pointer",
+  fontSize: "14px",
 };
 
 const infoPanelStyle = {
   position: "absolute",
   top: "120px",
-  left: "10px",
-  background: "#fff",
+  margin: 5,
+  background: "black",
+  opacity: 0.8,
   padding: "10px",
   borderRadius: "8px",
   boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+  color: "white",
 };
 
 export default FenceMeasurementTool;
