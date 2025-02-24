@@ -10,7 +10,7 @@ const FenceMeasurementTool = dynamic(
 
 export default function FenceMeasurementPage() {
   return (
-    <div>
+    <div style={{ minHeight: "100vh" }}>
       <FenceMeasurementTool />
     </div>
   );

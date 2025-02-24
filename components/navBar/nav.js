@@ -3,7 +3,10 @@ import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
+import { useUser } from "./../../context/userContext";
+
 const NavBar = () => {
+  const { user, loading, logout } = useUser();
   const router = useRouter();
 
   // Hide NavBar on the fence measurement page (adjust the route as needed)
@@ -50,6 +53,16 @@ const NavBar = () => {
           <Button color="inherit" component={Link} href="/contact">
             Contact
           </Button>
+
+          {user ? (
+            <Button color="inherit" component={Link} href="/profile">
+              Profile
+            </Button>
+          ) : (
+            <Button color="inherit" component={Link} href="/login">
+              Login
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
