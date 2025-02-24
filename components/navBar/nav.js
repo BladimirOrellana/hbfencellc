@@ -2,14 +2,13 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
 import { useUser } from "./../../context/userContext";
 
 const NavBar = () => {
   const { user, loading, logout } = useUser();
   const router = useRouter();
 
-  // Hide NavBar on the fence measurement page (adjust the route as needed)
+  // Hide NavBar on specific pages
   if (router.pathname === "/Fence-measurement-page") {
     return null;
   }
@@ -18,14 +17,17 @@ const NavBar = () => {
 
   return (
     <AppBar
-      position="absolute"
+      position="fixed"
       sx={{
-        background: "transparent",
+        backgroundColor: "rgba(255, 255, 255, 0.1)", // Transparent white
+        backdropFilter: "blur(10px)", // Blur effect for glassmorphism
+        WebkitBackdropFilter: "blur(10px)", // Safari support
         boxShadow: "none",
         color: isHomePage ? "white" : "black",
+        zIndex: 1000, // Ensure Navbar stays on top
       }}
     >
-      <Toolbar sx={{ marginBottom: isHomePage ? 0 : 2 }}>
+      <Toolbar>
         {/* Clickable HB Fence Typography */}
         <Typography
           variant="h6"
@@ -40,6 +42,7 @@ const NavBar = () => {
         >
           HB Fence
         </Typography>
+
         <Box>
           <Button color="inherit" component={Link} href="/">
             Home
