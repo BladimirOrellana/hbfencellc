@@ -23,7 +23,7 @@ const Room3d = () => {
           />
         </Suspense>
         <OrbitControls
-          enableZoom={true}
+          enableZoom={false}
           enablePan={false}
           autoRotate
           autoRotateSpeed={1}
