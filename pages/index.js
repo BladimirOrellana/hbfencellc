@@ -7,6 +7,9 @@ import EnhancifyWidget from "../components/EnhancifyWidget";
 import FinancingBanner from "../components/financingBanner";
 import EnhancifyPaymentCalculator from "../components/EnhancifyPaymentCalculator";
 import FenceMeasurementTool from "../components/FenceMeasurementTool";
+import Services from "../components/services";
+import ServiceCards from "../components/services";
+import Room3d from "../components/3d";
 
 export default function Home() {
   const [error, setError] = useState(null);
@@ -171,6 +174,7 @@ export default function Home() {
       </Box>
 
       {/* Financing Section */}
+      <Room3d />
       <Box
         sx={{
           height: "100vh",
