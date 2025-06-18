@@ -1,4 +1,7 @@
 import React from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+
 import Layout from "../components/Layout";
 import { ThemeProvider } from "@mui/material/styles"; // Import ThemeProvider
 import CssBaseline from "@mui/material/CssBaseline"; // Normalize CSS

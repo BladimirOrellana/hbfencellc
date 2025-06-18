@@ -3,8 +3,8 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Box } from "@mui/material";
 
-const FenceModel = ({ path, position, scale }) => {
-  const { scene } = useGLTF(path);
+const FenceModel = ({ url, position, scale }) => {
+  const { scene } = useGLTF(url);
   return <primitive object={scene} position={position} scale={scale} />;
 };
 
@@ -15,9 +15,9 @@ const FenceShowroom = () => {
         <ambientLight intensity={0.7} />
         <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
         <Suspense fallback={null}>
-          {/* Centered Fence Model */}
+          {/* Centered Fence Model from GitHub Releases */}
           <FenceModel
-            path="/models/cedarfence.glb"
+            url="https://github.com/BladimirOrellana/hb-fence-2025/releases/download/v3.0/cedarfence.glb"
             position={[0, 0, 0]}
             scale={[0.5, 0.5, 0.5]}
           />
